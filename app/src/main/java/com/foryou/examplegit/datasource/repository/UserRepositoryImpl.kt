@@ -8,6 +8,7 @@ import com.foryou.examplegit.datasource.model.UserDetail
 import com.foryou.examplegit.datasource.remote.ApiService
 import com.foryou.examplegit.datasource.remote.paging.UserPagingSource
 import com.foryou.examplegit.utils.DataState
+import com.foryou.examplegit.utils.PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -17,7 +18,7 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     override fun getUsers(): Flow<PagingData<User>> {
-        return Pager(config = PagingConfig(pageSize = 20),
+        return Pager(config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = { UserPagingSource(apiService) }).flow
     }
 

@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.foryou.examplegit.R
-import com.foryou.examplegit.presentation.ui.UserListScreen
+import com.foryou.examplegit.presentation.ui.users.UserListScreen
 import com.foryou.examplegit.presentation.ui.details.UserDetailScreen
 
 @Composable
@@ -24,7 +24,7 @@ fun AppNavHost(
     ) {
         composable(NavigationScreen.HomeScreen.route) {
             onTitleChanged(stringResource(R.string.user_screen))
-            UserListScreen(navController, modifier)
+            UserListScreen(modifier, navController)
         }
 
         composable(
@@ -36,7 +36,7 @@ fun AppNavHost(
             onTitleChanged(stringResource(R.string.detail_user_screen))
             val username =
                 it.arguments?.getString(NavigationScreen.UserDetailScreen.objectName) ?: ""
-            UserDetailScreen(modifier, username)
+            UserDetailScreen(modifier, navController, username)
         }
     }
 }

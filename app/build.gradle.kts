@@ -104,4 +104,7 @@ dependencies {
 
     // For loading images
     implementation(libs.coil.compose)
+
+    // Logger
+    implementation(libs.timber)
 }
