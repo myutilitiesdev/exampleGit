@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -146,7 +147,10 @@ fun UserDetailScreen(modifier: Modifier, navController: NavHostController, usern
                 }, modifier = Modifier.fillMaxWidth())
             }
         } ?: run {
-            ErrorLayout {
+            ErrorLayout(
+                stringResource(R.string.error_info),
+                stringResource(R.string.error_refresh)
+            ) {
                 navController.popBackStack()
             }
         }

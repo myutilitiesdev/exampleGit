@@ -26,6 +26,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.foryou.examplegit.R
 import com.foryou.examplegit.presentation.component.CircularIndeterminateProgressBar
+import com.foryou.examplegit.presentation.component.ErrorLayout
 import com.foryou.examplegit.presentation.ui.navigation.NavigationScreen
 import com.foryou.examplegit.presentation.viewmodel.UserViewModel
 import timber.log.Timber
@@ -100,12 +101,15 @@ fun UserListScreen(modifier: Modifier, navController: NavController) {
             }
 
             is LoadState.Error -> {
-
+                ErrorLayout(
+                    stringResource(R.string.error_loading),
+                    stringResource(R.string.error_loading_btn)
+                ) {
+                    users.retry()
+                }
             }
         }
     }
-
-//    CircularIndeterminateProgressBar(isDisplayed = isLoading.value, 0.4f)
 }
 
 @Preview

@@ -10,22 +10,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.foryou.examplegit.R
 
 @Composable
-fun ErrorLayout(onClicked: () -> Unit) {
+fun ErrorLayout(errorInfo: String, errorBtn: String, onClicked: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = stringResource(R.string.error_info),
+                text = errorInfo,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 style = TextStyle.Default
@@ -36,7 +34,7 @@ fun ErrorLayout(onClicked: () -> Unit) {
             Button(onClick = {
                 onClicked()
             }) {
-                Text(text = stringResource(R.string.error_refresh))
+                Text(text = errorBtn)
             }
         }
     }

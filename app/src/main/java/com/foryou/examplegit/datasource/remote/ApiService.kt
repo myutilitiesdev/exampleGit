@@ -1,6 +1,5 @@
 package com.foryou.examplegit.datasource.remote
 
-import com.foryou.examplegit.BuildConfig
 import com.foryou.examplegit.datasource.model.User
 import com.foryou.examplegit.datasource.model.UserDetail
 import retrofit2.http.GET
@@ -13,12 +12,12 @@ interface ApiService {
     suspend fun getUsers(
         @Query("per_page") perPage: Int,
         @Query("since") since: Int,
-        @Header("Authorization") auth: String? = BuildConfig.GITHUB_TOKEN
+        @Header("Authorization") auth: String
     ): List<User>
 
     @GET("users/{username}")
     suspend fun getUserDetail(
         @Path("username") username: String,
-        @Header("Authorization") auth: String? = BuildConfig.GITHUB_TOKEN
+        @Header("Authorization") auth: String
     ): UserDetail
 }

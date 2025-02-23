@@ -5,5 +5,7 @@
     <string name="detail_user_screen">User Detail</string>
     <string name="error_info">Can\'t find this user !</string>
     <string name="error_refresh">Close this screen</string>
+    <string name="error_loading">Some problems when loading data</string>
+    <string name="error_loading_btn">Load Data Again</string>
     <string name="load_more">Load More</string>
 </resources>
