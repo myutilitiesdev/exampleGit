@@ -1,10 +1,14 @@
 package com.foryou.examplegit.di
 
+import android.content.Context
+import androidx.room.Room
+import com.foryou.examplegit.datasource.local.AppDatabase
 import com.foryou.examplegit.datasource.remote.ApiService
 import com.foryou.examplegit.utils.DOMAIN_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -83,4 +87,13 @@ object AppModule {
         return retrofit.create(ApiService::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "github_db"
+        ).build()
+    }
 }
