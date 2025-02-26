@@ -25,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.foryou.examplegit.R
+import com.foryou.examplegit.datasource.local.toDomain
 import com.foryou.examplegit.presentation.component.CircularIndeterminateProgressBar
 import com.foryou.examplegit.presentation.component.ErrorLayout
 import com.foryou.examplegit.presentation.ui.navigation.NavigationScreen
@@ -49,7 +50,7 @@ fun UserListScreen(modifier: Modifier, navController: NavController) {
                 LazyColumn(modifier) {
                     items(users.itemCount) { index ->
                         users[index]?.let { user ->
-                            UserItem(user) {
+                            UserItem(user.toDomain()) {
                                 navController.navigate(
                                     NavigationScreen.UserDetailScreen.route.plus(
                                         "/${user.login}"
@@ -62,7 +63,7 @@ fun UserListScreen(modifier: Modifier, navController: NavController) {
                     // Loading More Items (Pagination)
                     when (users.loadState.append) {
                         is LoadState.Loading -> {
-                            Timber.e("LoadState.Loading")
+                            Timber.e("Loading More Items LoadState.Loading")
                             item {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -81,7 +82,7 @@ fun UserListScreen(modifier: Modifier, navController: NavController) {
                         }
 
                         is LoadState.Error -> {
-                            Timber.e("LoadState.Error")
+                            Timber.e("Loading More Items LoadState.Error")
                             item {
                                 Text(
                                     text = "Error loading more users",

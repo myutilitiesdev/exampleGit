@@ -1,5 +1,6 @@
 package com.foryou.examplegit.di
 
+import com.foryou.examplegit.datasource.local.AppDatabase
 import com.foryou.examplegit.datasource.remote.ApiService
 import com.foryou.examplegit.datasource.repository.UserRepository
 import com.foryou.examplegit.datasource.repository.UserRepositoryImpl
@@ -15,10 +16,10 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideUserRepository(
-        apiService: ApiService,
+        apiService: ApiService, database: AppDatabase
     ): UserRepository {
         return UserRepositoryImpl(
-            apiService
+            apiService, database
         )
     }
 }
