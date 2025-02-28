@@ -3,9 +3,8 @@
 ## Architecture
 
 - MVVM Architecture (Model - ComposableView - ViewModel)
-- Repository pattern
-- [markdown-it] - Markdown parser done right. Fast and easy to extend.
-- [Twitter Bootstrap] - great UI boilerplate for modern web apps
+- Repository, Observer, Singleton pattern
+- Jetpack Compose, Paging 3
 
 ## Built With 🛠
 - [First class and official programming language for Android development.](https://kotlinlang.org/)
