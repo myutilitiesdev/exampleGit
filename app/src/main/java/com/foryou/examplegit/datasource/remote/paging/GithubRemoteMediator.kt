@@ -7,17 +7,18 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.foryou.examplegit.BuildConfig
 import com.foryou.examplegit.datasource.local.AppDatabase
+import com.foryou.examplegit.datasource.local.CacheInfo
 import com.foryou.examplegit.datasource.local.GithubUser
 import com.foryou.examplegit.datasource.local.UserRemoteKeys
 import com.foryou.examplegit.datasource.local.toEntity
 import com.foryou.examplegit.datasource.remote.ApiService
 import com.foryou.examplegit.utils.PAGE_SIZE
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPagingApi::class)
 class GithubRemoteMediator(
-    private val api: ApiService,
-    private val database: AppDatabase
+    private val api: ApiService, private val database: AppDatabase
 ) : RemoteMediator<Int, GithubUser>() {
 
     private val userDao = database.githubUserDao()
@@ -25,9 +26,23 @@ class GithubRemoteMediator(
 
     private val authHeader = "token ${BuildConfig.GITHUB_TOKEN}"
 
+    override suspend fun initialize(): InitializeAction {
+        val cacheTimeout = TimeUnit.MILLISECONDS.convert(5, TimeUnit.SECONDS)
+        val lastUpdated = database.cacheInfoDao().getLastUpdated()
+
+        return if (lastUpdated != null && System.currentTimeMillis() - lastUpdated <= cacheTimeout) {
+            Timber.e("Cached data is up-to-date, no need to fetch from network")
+            // Cached data is up-to-date, no need to fetch from network.
+            InitializeAction.SKIP_INITIAL_REFRESH
+        } else {
+            Timber.e("Need to refresh the cached data from network.")
+            // Need to refresh the cached data from network.
+            InitializeAction.LAUNCH_INITIAL_REFRESH
+        }
+    }
+
     override suspend fun load(
-        loadType: LoadType,
-        state: PagingState<Int, GithubUser>
+        loadType: LoadType, state: PagingState<Int, GithubUser>
     ): MediatorResult {
         return try {
             val currentPage = when (loadType) {
@@ -38,19 +53,17 @@ class GithubRemoteMediator(
 
                 LoadType.PREPEND -> {
                     val remoteKeys = getRemoteKeyForFirstItem(state)
-                    val prevPage = remoteKeys?.prevPage
-                        ?: return MediatorResult.Success(
-                            endOfPaginationReached = remoteKeys != null
-                        )
+                    val prevPage = remoteKeys?.prevPage ?: return MediatorResult.Success(
+                        endOfPaginationReached = remoteKeys != null
+                    )
                     prevPage
                 }
 
                 LoadType.APPEND -> {
                     val remoteKeys = getRemoteKeyForLastItem(state)
-                    val nextPage = remoteKeys?.nextPage
-                        ?: return MediatorResult.Success(
-                            endOfPaginationReached = remoteKeys != null
-                        )
+                    val nextPage = remoteKeys?.nextPage ?: return MediatorResult.Success(
+                        endOfPaginationReached = remoteKeys != null
+                    )
                     nextPage
                 }
             }
@@ -70,14 +83,17 @@ class GithubRemoteMediator(
                 }
                 val keys = response.map { unsplashImage ->
                     UserRemoteKeys(
-                        id = unsplashImage.id.toString(),
-                        prevPage = prevPage,
-                        nextPage = nextPage
+                        id = unsplashImage.id.toString(), prevPage = prevPage, nextPage = nextPage
                     )
                 }
                 userRemoteKeys.addAllRemoteKeys(remoteKeys = keys)
                 userDao.insertAll(response.map { it.toEntity() })
             }
+
+            // Update the lastUpdated timestamp after successful fetch
+            val currentTime = System.currentTimeMillis()
+            database.cacheInfoDao().insertCacheInfo(CacheInfo(lastUpdated = currentTime))
+
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {
             return MediatorResult.Error(e)
