@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -40,6 +41,7 @@ fun UserItem(user: User, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .testTag("user_item")
             .padding(8.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(8.dp),
